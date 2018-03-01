@@ -1,9 +1,14 @@
 require 'terminal-table'
+require 'json'
 
 module New_Cust
     module_function
 
     customers = []
+
+    File.open("customers.txt").each do |line|
+        customers = JSON.parse(line, {symbolize_names: true})
+    end
 
     def add_customer(customers)
         puts "What is your new customers name?"
@@ -12,16 +17,22 @@ module New_Cust
         diet = gets.chomp.capitalize!
         puts "What table will they be at?"
         table_no = gets.chomp.to_i
-        customers << [table_no, name, diet]
+        order_cost = 0
+        customers << [table_no, name, diet, order_cost]
 
-        table = Terminal::Table.new :title => "Customers", :headings => ["Table number", "Customer", "Dietry needs"], :rows => customers
+        table = Terminal::Table.new :title => "Customers", :headings => ["Table number", "Customer", "Dietry needs", "Order cost"], :rows => customers
 
         table.style = {:width => 100, :padding_left => 3, :border_x => "=", :border_i => "x"}
+
 
         puts table
 
     end
 
-    puts add_customer(customers)
+ #add_customer customers    #NEED TO ADD THIS INTO MASTER TO ACTIVATE LATER
+
+    File.open("customers.txt", "w") do |line|
+        line.puts JSON.generate(customers)
+    end    
 
 end

@@ -1,8 +1,11 @@
 #require 'Table-Terminal'
 require 'json'
+require_relative 'operations'
 
 module Organisation
     module_function
+
+
     table_no = -1
     puts "Welcome to Restaurant Manager 2018"
     sleep 2
@@ -63,9 +66,12 @@ module Organisation
         table_covered.delete_at(random_index)
         puts "Staff #{i} will cover table numbers #{tns}"
     end
+    if table_covered.length == 0
+        state = false
+        Operations::organise state
+    end
 
-    #START OPERATIONS LOOP
-
+    
 
 
 
