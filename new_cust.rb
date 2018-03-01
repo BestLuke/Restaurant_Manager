@@ -24,15 +24,18 @@ module New_Cust
 
         table.style = {:width => 100, :padding_left => 3, :border_x => "=", :border_i => "x"}
 
+        system "clear"
 
         puts table
+
+        File.open("customers.txt", "w") do |line|
+            line.puts JSON.generate(customers)
+        end 
 
     end
 
  #add_customer customers    #NEED TO ADD THIS INTO MASTER TO ACTIVATE LATER
 
-    File.open("customers.txt", "w") do |line|
-        line.puts JSON.generate(customers)
-    end    
+   
 
 end

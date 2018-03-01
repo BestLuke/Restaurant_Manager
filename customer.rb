@@ -6,8 +6,7 @@ module Customer
 
     name_found = false
     customers = []
-    table_actual =[]
-    cost = -1
+    table_actual = Terminal::Table.new
     File.open("customers.txt").each do |line|
         customers = JSON.parse(line, {symbolize_names: true})
 
@@ -16,66 +15,71 @@ module Customer
         table_actual = table
     end 
 
-    def start table_def
+    def start_operations table
         puts "Here is who is at your Restaurant now"
         puts table
     end
 
-    puts table_def table_actual
-    puts "Who would you like to view?"
-    name = gets.chomp.capitalize!
-    #set up loop to iterate through customers
-    #Check the second element for .include?
-    #Continue with functionality.
-    for i in customers
-        if i[1].include? name
-            puts "What would you like to do for #{name}? (Add order, Pay status, Pay order)"
-            name_found = true
-            cost = i[3]
-        end
-    end
-    if name_found == true
-        res = gets.chomp.capitalize!
-    end
-        case res
-        when "Add order"
-            puts "Please insert the cost of the order"
-            added_cost = gets.chomp.to_i
-            cost = cost + added_cost
-            puts "#{name}'s order is now: $#{cost}"
+    def customer_main table_actual, customers
+        puts start_operations table_actual
+        cost = -1
+        if customers.length != 0
+            puts "Who would you like to view?"
+            name = gets.chomp.capitalize!
+            #set up loop to iterate through customers
+            #Check the second element for .include?
+            #Continue with functionality.
             for i in customers
                 if i[1].include? name
-                    i[3] = cost
+                    puts "What would you like to do for #{name}? (Add order, Pay status, Pay order)"
+                    name_found = true
+                    cost = i[3]
                 end
             end
-        when "Pay status"
-            if cost != 0
-                puts "#{name} hasn't payed yet, owes $#{cost}"
-            else
-                puts "Customer has paid"
+            if name_found == true
+                res = gets.chomp.capitalize!
             end
-        when "Pay order"
-            if cost != 0
-                puts "#{name} owes $#{cost}, are you paying?(y/n)"
-                ans = gets.chomp.capitalize!
-                if ans == "Y" || "Yes"
-                    cost = cost - cost
-                    puts "#{name} has paid"
+                case res
+                when "Add order"
+                    puts "Please insert the cost of the order"
+                    added_cost = gets.chomp.to_i
+                    cost = cost + added_cost
+                    puts "#{name}'s order is now: $#{cost}"
                     for i in customers
                         if i[1].include? name
                             i[3] = cost
                         end
                     end
-                else
-                    puts "#{name} still hasn't payed yet, owes $#{cost}"
+                when "Pay status"
+                    if cost == 0
+                        puts "#{name} hasn't payed yet, owes $#{cost}"
+                    else
+                        puts "Customer has paid"
+                    end
+                when "Pay order"
+                    if cost != 0
+                        puts "#{name} owes $#{cost}, are you paying?(y/n)"
+                        ans = gets.chomp.capitalize!
+                        if ans == "Y" || ans == "Yes"
+                            cost = cost - cost
+                            puts "#{name} has paid"
+                            for i in customers
+                                if i[1].include? name
+                                    i[3] = cost
+                                end
+                            end
+                        else
+                            puts "#{name} still hasn't payed yet, owes $#{cost}"
+                        end
+                    else
+                        puts "Customer has paid"
+                    end
                 end
-            else
-                puts "Customer has paid"
             end
+            File.open("customers.txt", "w") do |line|
+                line.puts JSON.generate(customers)
+            end 
         end
 
-        File.open("customers.txt", "w") do |line|
-            line.puts JSON.generate(customers)
-        end 
 
 end

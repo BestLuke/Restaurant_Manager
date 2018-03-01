@@ -1,11 +1,2 @@
-require_relative 'organisation'
-
-module Restraurant
-    module_function
-
-
-
-
-
-
-end
+#!/usr/bin/env ruby
+require_relative "organisation"

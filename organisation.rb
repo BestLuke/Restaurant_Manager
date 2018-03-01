@@ -1,10 +1,20 @@
-#require 'Table-Terminal'
+require 'terminal-table'
 require 'json'
 require_relative 'operations'
 
 module Organisation
     module_function
 
+    customers = []
+    table_actual = Terminal::Table.new
+
+    File.open("customers.txt").each do |line|
+        customers = JSON.parse(line, {symbolize_names: true})
+
+        table = Terminal::Table.new :title => "Customers", :headings => ["Table number", "Customer", "Dietry needs", "Order cost"], :rows => customers
+        table.style = {:width => 100, :padding_left => 3, :border_x => "=", :border_i => "x"}
+        table_actual = table
+    end
 
     table_no = -1
     puts "Welcome to Restaurant Manager 2018"
@@ -68,7 +78,7 @@ module Organisation
     end
     if table_covered.length == 0
         state = false
-        Operations::organise state
+        Operating::organise customers, state, table_actual
     end
 
     
